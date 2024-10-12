@@ -77,3 +77,13 @@ def update_status(task_id):
     connection.close()
 
     return jsonify(success=True)
+
+@bp.route("/tasks/delete/<int:task_id>", methods=["DELETE"])
+def delete(task_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute('DELETE FROM tasks WHERE id = %s', (task_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    return jsonify(success=True)
