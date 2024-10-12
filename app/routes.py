@@ -18,7 +18,7 @@ def tasks():
     return jsonify(tasks=tasks)
 
 @bp.route("/tasks/add", methods=["POST"])
-def add()
+def add():
     data = request.get_json()
     todo = data.get('todo', '').strip() 
     if not todo:
