@@ -179,6 +179,12 @@ document.addEventListener("DOMContentLoaded", function () {
     saveButton.textContent = "Salvar";
     li.appendChild(saveButton);
 
+    // Oculta os ícones de edição e exclusão
+    const editLink = li.querySelector(".edit-link");
+    const deleteLink = li.querySelector(".delete-link");
+    editLink.style.display = "none";
+    deleteLink.style.display = "none";
+
     // Ao clicar no botão, salva as alterações
     saveButton.addEventListener("click", function () {
       const newTitle = input.value.trim();
