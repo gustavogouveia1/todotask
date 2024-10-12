@@ -162,4 +162,57 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
   }
+
+  function editTask(taskId) {
+    const li = document.querySelector(`li[data-id="${taskId}"]`);
+    const span = li.querySelector("span");
+
+    // Cria um campo de entrada para edição
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = span.textContent; // Define o valor atual
+    input.className = "input-task"; // Adiciona uma classe para aplicar estilos
+    li.replaceChild(input, span); // Substitui o span pelo input
+
+    // Cria um botão para salvar as mudanças
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Salvar";
+    li.appendChild(saveButton);
+
+    // Ao clicar no botão, salva as alterações
+    saveButton.addEventListener("click", function () {
+      const newTitle = input.value.trim();
+      if (newTitle) {
+        fetch(`http://127.0.0.1:5000/tasks/edit/${taskId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title: newTitle }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Atualiza a interface com o novo título
+              span.textContent = newTitle;
+              li.replaceChild(span, input); // Substitui o input pelo span
+              saveButton.remove(); // Remove o botão de salvar
+
+              // Mostra novamente os ícones de edição e exclusão
+              editLink.style.display = "inline";
+              deleteLink.style.display = "inline";
+            } else {
+              alert(
+                "Erro ao editar tarefa: " + (data.error || "desconhecido.")
+              );
+            }
+          })
+          .catch((err) => {
+            alert("Erro na conexão: " + err);
+          });
+      } else {
+        alert("O título da tarefa não pode estar vazio.");
+      }
+    });
+  }
 });
