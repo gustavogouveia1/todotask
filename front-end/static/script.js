@@ -147,4 +147,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
   }
+
+  // Deletar tarefa
+  function deleteTask(taskId) {
+    fetch(`http://127.0.0.1:5000/tasks/delete/${taskId}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          document.querySelector(`li[data-id="${taskId}"]`).remove();
+        } else {
+          alert("Erro ao deletar tarefa.");
+        }
+      });
+  }
 });
