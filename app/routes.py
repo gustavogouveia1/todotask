@@ -32,3 +32,21 @@ def add():
     cursor.close()
     connection.close()
     return jsonify(success=True, task={'id': task_id, 'title': todo, 'status': 'pendente'})
+
+@bp.route("/tasks/update_status/<int:task_id>", methods=["POST"])
+def update_status(task_id):
+    data = request.get_json()
+    new_status = data.get('status')
+
+    if new_status not in ['pendente', 'em andamento', 'completa']:
+        return jsonify(success=False, error="Status inválido"), 400
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('UPDATE tasks SET status = %s WHERE id = %s', (new_status, task_id))
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return jsonify(success=True)
