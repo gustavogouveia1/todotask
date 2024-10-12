@@ -33,6 +33,33 @@ def add():
     connection.close()
     return jsonify(success=True, task={'id': task_id, 'title': todo, 'status': 'pendente'})
 
+@bp.route("/tasks/edit/<int:task_id>", methods=["POST"])
+def edit(task_id):
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        data = request.get_json()
+        new_task = data.get('title').strip()
+
+        if not new_task:
+            return jsonify(success=False, error="O título da tarefa não pode estar vazio"), 400
+
+        cursor.execute('UPDATE tasks SET title = %s WHERE id = %s', (new_task, task_id))
+        connection.commit()
+        return jsonify(success=True)
+
+        cursor.execute('SELECT * FROM tasks WHERE id = %s', (task_id,))
+        todo = cursor.fetchone()
+        if not todo:
+            return jsonify(success=False, error="Tarefa não encontrada"), 404
+
+    except mysql.connector.Error as err:
+        return jsonify(success=False, error=str(err)), 500
+    finally:
+        cursor.close()
+        connection.close()
+
 @bp.route("/tasks/update_status/<int:task_id>", methods=["POST"])
 def update_status(task_id):
     data = request.get_json()
