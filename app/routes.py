@@ -16,3 +16,19 @@ def tasks():
     cursor.close()
     connection.close()
     return jsonify(tasks=tasks)
+
+@bp.route("/tasks/add", methods=["POST"])
+def add()
+    data = request.get_json()
+    todo = data.get('todo', '').strip() 
+    if not todo:
+        return jsonify(success=False, error="O título da tarefa não pode estar vazio"), 400
+    
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO tasks (title) VALUES (%s)', (todo,))
+    connection.commit()
+    task_id = cursor.lastrowid
+    cursor.close()
+    connection.close()
+    return jsonify(success=True, task={'id': task_id, 'title': todo, 'status': 'pendente'})
