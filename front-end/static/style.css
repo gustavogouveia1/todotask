@@ -1,0 +1,136 @@
+/* Resetando margens e preenchimento */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    color: #4a4a4a;
+}
+
+/* Estilizando o formulário */
+#add-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.input-task {
+    padding: 15px;
+    width: 100%;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: border-color 0.3s;
+}
+
+#new-task:focus {
+    border-color: #0056b3; /* Azul mais escuro ao focar */
+    outline: none; /* Remove o contorno padrão */
+}
+
+button {
+    padding: 15px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1.2em;
+    transition: background-color 0.3s, transform 0.2s;
+    flex-shrink: 0; /* Impede que o botão mude de tamanho */
+    width: 120px; /* Largura fixa para o botão */
+}
+
+button:hover {
+    background-color: #0056b3; /* Escurece ao passar o mouse */
+    transform: scale(1.05); /* Aumenta um pouco o tamanho */
+}
+
+/* Estilizando a lista de tarefas */
+#task-list {
+    list-style-type: none;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* Estilizando cada item da lista */
+#task-list li {
+    background: white;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+#task-list li:hover {
+    background-color: #f1f1f1; /* Muda a cor ao passar o mouse */
+}
+
+.completed {
+    text-decoration: line-through; /* Risca tarefas completadas */
+    color: #999;
+}
+
+/* Estilizando o seletor de status */
+.status-select {
+    margin-right: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    font-size: 1em;
+    transition: border-color 0.3s;
+    flex-shrink: 0; /* Impede que o seletor mude de tamanho */
+}
+
+.status-select:focus {
+    border-color: #0056b3; /* Azul mais escuro ao focar */
+    outline: none; /* Remove o contorno padrão */
+}
+
+/* Estilizando os links de editar e deletar */
+.edit-link, .delete-link {
+    margin-left: 15px;
+    color: #007bff; /* Azul */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.edit-link:hover, .delete-link:hover {
+    color: #0056b3; /* Escurece ao passar o mouse */
+}
+
+/* Estilizando o checkmark */
+.checkmark {
+    margin-left: 10px;
+    color: green; /* Verde para checkmark */
+    font-size: 20px; /* Tamanho do checkmark */
+}
+
+/* Ajustando a largura do texto da tarefa */
+#task-list li span {
+    flex-grow: 1; /* Faz com que o texto ocupe o espaço restante */
+    margin-right: 15px; /* Espaço entre o texto e os ícones */
+}
