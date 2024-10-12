@@ -1,10 +1,10 @@
 import mysql.connector
 
 db_config = {
-    'user': 'usuario',
-    'password': 'senha',
-    'host': 'host',
-    'database': 'banco de dados'
+    'user': 'gouveiadev01',
+    'password': 'Loks123',
+    'host': 'mysql.gouveiadev.com.br',
+    'database': 'gouveiadev01'
 }
 
 def get_db_connection():
