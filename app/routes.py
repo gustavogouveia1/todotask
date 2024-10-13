@@ -44,15 +44,15 @@ def edit(task_id):
 
         if not new_task:
             return jsonify(success=False, error="O título da tarefa não pode estar vazio"), 400
-
-        cursor.execute('UPDATE tasks SET title = %s WHERE id = %s', (new_task, task_id))
-        connection.commit()
-        return jsonify(success=True)
-
+        
         cursor.execute('SELECT * FROM tasks WHERE id = %s', (task_id,))
         todo = cursor.fetchone()
         if not todo:
             return jsonify(success=False, error="Tarefa não encontrada"), 404
+
+        cursor.execute('UPDATE tasks SET title = %s WHERE id = %s', (new_task, task_id))
+        connection.commit()
+        return jsonify(success=True)
 
     except mysql.connector.Error as err:
         return jsonify(success=False, error=str(err)), 500
