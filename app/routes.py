@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify
-from .db import get_db_connection
+from .redis_config import get_redis_client
+from .db import get_db_connection, mysql
+from datetime import datetime
+import json
 
 bp = Blueprint('main', __name__)
 
@@ -7,14 +10,39 @@ bp = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+def datetime_converter(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
+# Obtem a conexão com o Redis
+redis_client = get_redis_client()
+
 @bp.route('/tasks', methods=['GET'])
 def tasks():
+    cache_key = "tasks_cache"
+
+    cached_tasks = redis_client.get(cache_key)
+
+    if cached_tasks:
+        return jsonify(tasks=json.loads(cached_tasks))
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     cursor.execute('SELECT * FROM tasks')
     tasks = cursor.fetchall()
     cursor.close()
     connection.close()
+
+    # Converte datetime para string antes de serializar
+    for task in tasks:
+        # Aqui você pode verificar especificamente por 'created_at'
+        if 'created_at' in task and isinstance(task['created_at'], datetime):
+            task['created_at'] = task['created_at'].isoformat()  # Converte 'created_at' para string
+
+    # Armazena as tarefas no cache por 1800 segundos (30 minutos)
+    redis_client.setex(cache_key, 60, json.dumps(tasks))
+
     return jsonify(tasks=tasks)
 
 @bp.route("/tasks/add", methods=["POST"])
@@ -31,6 +59,9 @@ def add():
     task_id = cursor.lastrowid
     cursor.close()
     connection.close()
+
+    redis_client.delete("tasks_cache")
+
     return jsonify(success=True, task={'id': task_id, 'title': todo, 'status': 'pendente'})
 
 @bp.route("/tasks/edit/<int:task_id>", methods=["POST"])
@@ -52,7 +83,10 @@ def edit(task_id):
 
         cursor.execute('UPDATE tasks SET title = %s WHERE id = %s', (new_task, task_id))
         connection.commit()
-        return jsonify(success=True)
+
+        redis_client.delete("tasks_cache")
+    
+        return jsonify(success=True, task={'id': task_id, 'title': new_task})
 
     except mysql.connector.Error as err:
         return jsonify(success=False, error=str(err)), 500
@@ -76,6 +110,8 @@ def update_status(task_id):
     cursor.close()
     connection.close()
 
+    redis_client.delete("tasks_cache")
+
     return jsonify(success=True)
 
 @bp.route("/tasks/delete/<int:task_id>", methods=["DELETE"])
@@ -86,4 +122,7 @@ def delete(task_id):
     connection.commit()
     cursor.close()
     connection.close()
+
+    redis_client.delete("tasks_cache")
+    
     return jsonify(success=True)
