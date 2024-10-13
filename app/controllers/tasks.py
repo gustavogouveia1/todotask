@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify
-from .redis_config import get_redis_client
-from .db import get_db_connection, mysql
+from app.models import get_redis_client, get_db_connection, mysql
 from datetime import datetime
 import json
 
-bp = Blueprint('main', __name__)
+bp = Blueprint('tasks', __name__)
 
 @bp.route('/')
 def index():
