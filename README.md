@@ -1,9 +1,10 @@
 # To-Do Task List
 
-Uma aplicação web simples para gerenciamento de tarefas, construída com Flask para o backend e HTML/CSS/JavaScript para o frontend. Esta aplicação permite criar, visualizar, editar, atualizar o status e excluir tarefas, com persistência dos dados em um banco de dados MySQL.
+Uma aplicação web simples para gerenciamento de tarefas, construída com Flask para o backend, HTML, CSS e JavaScript para o frontend, com persistência dos dados em um banco de dados MySQL. A aplicação permite criar, visualizar, editar, atualizar o status e excluir tarefas, além de incluir um sistema de autenticação com JWT para controle de usuários.
 
 ## Funcionalidades
 
+- Autenticação de usuário
 - Adicionar tarefas
 - Visualizar lista de tarefas
 - Editar título de tarefas
@@ -14,27 +15,36 @@ Uma aplicação web simples para gerenciamento de tarefas, construída com Flask
 
 todo/
 │
-├── .venv/
+├── .venv/                   # Ambiente virtual
 │
-├── app/
-│   ├── __init__.py
-│   ├── db.py
-│   └── routes.py
+├── app/                      # Lógica do backend
+│   ├── __init__.py           # Inicialização do Flask
+│   ├── db.py                 # Configurações do banco de dados
+│   ├── routes.py             # Rotas do Flask (API e autenticação)
+│   └── auth/                 # Blueprint de autenticação
+│       ├── __init__.py
+│       ├── routes.py
+│       └── models.py
 │
-├── front-end/
-│   ├── static/
-│   │   ├── script.js
-│   │   └── style.css
-│   └── templates/
-│       └── index.html
+├── front-end/                # Arquivos do frontend
+│   ├── static/               # Arquivos estáticos (CSS, JS)
+│   │   ├── script.js         # Lógica JavaScript para interação
+│   │   └── style.css         # Estilos CSS
+│   └── templates/            # Templates HTML
+│       ├── index.html        # Página principal (Lista de tarefas)
+│       ├── login.html        # Página de login
+│       └── register.html     # Página de registro de usuário
 │
-└── run.py
+├── run.py                    # Arquivo para rodar a aplicação
+└── requirements.txt          # Dependências do projeto
+
 
 ## Tecnologias Utilizadas
 
 - **Backend**: Python com Flask
 - **Frontend**: HTML, CSS, JavaScript (Vanilla)
 - **Banco de Dados**: MySQL
+- **Autenticação**: JWT (JSON Web Tokens)
 - **Autenticação CORS**: Flask-CORS
 
 ## Configuração do Ambiente de Desenvolvimento
@@ -50,7 +60,7 @@ todo/
 1. **Clone o repositório**:
 
     ```bash
-    git clone https://github.com/seu-usuario/seu-repositorio.git
+    git clone https://github.com/gustavogouveia1/todotask
     cd todo
     ```
 
@@ -73,10 +83,10 @@ todo/
 
     ```python
     db_config = {
-        'user': 'seu_usuario',
-        'password': 'sua_senha',
-        'host': 'localhost',
-        'database': 'nome_do_banco_de_dados'
+        'user': os.getenv('DB_USER', 'seu_usuario'),
+        'password': os.getenv('DB_PASSWORD', 'sua_senha'),
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'database': os.getenv('DB_NAME', 'nome_do_banco_de_dados')
     }
     ```
 
@@ -100,14 +110,19 @@ A aplicação possui as seguintes rotas para interagir com as tarefas:
 - `POST /tasks/update_status/<int:task_id>`: Atualiza o status de uma tarefa
 - `DELETE /tasks/delete/<int:task_id>`: Deleta uma tarefa
 
+## Autenticação
+
+- `POST /auth/login`: Realiza o login do usuário
+- `POST /auth/register`: Registra um novo usuário
+- `POST /auth/logout`: Realiza o logout do usuário
+- `GET /auth/me`: Retorna informações do usuário autenticado
+
 ## Frontend
 
 A interface do usuário permite:
-- Adicionar tarefas através de um formulário
-- Visualizar a lista de tarefas com status
-- Editar títulos de tarefas
-- Atualizar o status das tarefas diretamente na lista
-- Deletar tarefas
+- Página de login: Formulário para login de usuários.
+- Página de registro: Formulário para registrar novos usuários.
+- Página principal: Exibição da lista de tarefas com opções para adicionar, editar, atualizar status e deletar.
 
 ## Contribuição
 
