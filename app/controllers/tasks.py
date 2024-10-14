@@ -1,22 +1,37 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, make_response, url_for
 from app.models import get_redis_client, get_db_connection, mysql
 from datetime import datetime
 import json
+from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token, JWTManager, get_jwt, verify_jwt_in_request
 
 tasks_bp = Blueprint('tasks', __name__)
 print("Blueprint tasks_bp foi criado com sucesso!")
 
+redis_client = get_redis_client()
+
 @tasks_bp.route('/')
 def index():
+    token = get_token_from_cookie()
+    token_from_redis = get_token_from_redis(request.cookies.get('username'))
+    
+    if token is None and token_from_redis is None:
+        return jsonify({"error": "Usuário não autenticado"}), 401
+
     return render_template('index.html')
 
-def datetime_converter(obj):
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    raise TypeError("Type not serializable")
+def get_token_from_redis(username):
+    token = redis_client.get(f'token:{username}')
 
-# Obtem a conexão com o Redis
-redis_client = get_redis_client()
+    if token is None:
+        return None
+    
+    return token
+
+def get_token_from_cookie():
+    token = request.cookies.get('access_token')  
+    if token is None:
+        return None
+    return token
 
 @tasks_bp.route('/tasks', methods=['GET'])
 def tasks():
@@ -32,6 +47,9 @@ def tasks():
     tasks = cursor.fetchall()
     cursor.close()
     connection.close()
+
+    token = get_token_from_cookie()
+    token_from_redis = get_token_from_redis(request.cookies.get('username'))
 
     for task in tasks:
         if 'created_at' in task and isinstance(task['created_at'], datetime):
@@ -121,4 +139,3 @@ def delete(task_id):
     redis_client.delete("tasks_cache")
     
     return jsonify(success=True)
-
