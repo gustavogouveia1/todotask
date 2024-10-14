@@ -1,1 +1,2 @@
-from .tasks import bp as tasks_bp
+from .tasks import tasks_bp
+from .auth import auth_bp

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Registro de Usuário</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             height: 100vh;
         }
 
-        .login-container {
+        .register-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -39,7 +39,7 @@
             font-weight: bold;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"], input[type="password"], input[type="email"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -62,40 +62,26 @@
             background-color: #218838;
         }
 
-        .forgot-password {
-            text-align: right;
+        .login-link {
+            text-align: center;
             margin-top: 10px;
         }
 
-        .forgot-password a {
+        .login-link a {
             text-decoration: none;
             color: #007bff;
         }
 
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .register-link a {
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        .register-link a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Login</h2>
-    <form action="/auth/login" method="POST">
+<div class="register-container">
+    <h2>Registrar</h2>
+    <form action="http://localhost:5000/auth/register" method="POST">
         <div class="form-group">
             <label for="username">Usuário</label>
             <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
@@ -104,14 +90,14 @@
             <label for="password">Senha</label>
             <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
         </div>
-        <button type="submit">Entrar</button>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+        </div>
+        <button type="submit">Registrar</button>
     </form>
-    <div class="forgot-password">
-        <a href="/forgot-password">Esqueceu a senha?</a>
-    </div>
-    <div class="register-link">
-        <p>Ainda não tem uma conta?</p>
-        <a href="/auth/register">Registrar-se</a>
+    <div class="login-link">
+        <a href="/auth">Já tem uma conta? Faça login</a>
     </div>
 </div>
 

@@ -3,9 +3,10 @@ from app.models import get_redis_client, get_db_connection, mysql
 from datetime import datetime
 import json
 
-bp = Blueprint('tasks', __name__)
+tasks_bp = Blueprint('tasks', __name__)
+print("Blueprint tasks_bp foi criado com sucesso!")
 
-@bp.route('/')
+@tasks_bp.route('/')
 def index():
     return render_template('index.html')
 
@@ -17,10 +18,9 @@ def datetime_converter(obj):
 # Obtem a conexão com o Redis
 redis_client = get_redis_client()
 
-@bp.route('/tasks', methods=['GET'])
+@tasks_bp.route('/tasks', methods=['GET'])
 def tasks():
     cache_key = "tasks_cache"
-
     cached_tasks = redis_client.get(cache_key)
 
     if cached_tasks:
@@ -33,24 +33,21 @@ def tasks():
     cursor.close()
     connection.close()
 
-    # Converte datetime para string antes de serializar
     for task in tasks:
-        # Aqui você pode verificar especificamente por 'created_at'
         if 'created_at' in task and isinstance(task['created_at'], datetime):
-            task['created_at'] = task['created_at'].isoformat()  # Converte 'created_at' para string
+            task['created_at'] = task['created_at'].isoformat()
 
-    # Armazena as tarefas no cache por 1800 segundos (30 minutos)
     redis_client.setex(cache_key, 60, json.dumps(tasks))
 
     return jsonify(tasks=tasks)
 
-@bp.route("/tasks/add", methods=["POST"])
+@tasks_bp.route("/tasks/add", methods=["POST"])
 def add():
     data = request.get_json()
-    todo = data.get('todo', '').strip() 
+    todo = data.get('todo', '').strip()
     if not todo:
         return jsonify(success=False, error="O título da tarefa não pode estar vazio"), 400
-    
+
     connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute('INSERT INTO tasks (title) VALUES (%s)', (todo,))
@@ -63,12 +60,11 @@ def add():
 
     return jsonify(success=True, task={'id': task_id, 'title': todo, 'status': 'pendente'})
 
-@bp.route("/tasks/edit/<int:task_id>", methods=["POST"])
+@tasks_bp.route("/tasks/edit/<int:task_id>", methods=["POST"])
 def edit(task_id):
     try:
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
-
         data = request.get_json()
         new_task = data.get('title').strip()
 
@@ -93,7 +89,7 @@ def edit(task_id):
         cursor.close()
         connection.close()
 
-@bp.route("/tasks/update_status/<int:task_id>", methods=["POST"])
+@tasks_bp.route("/tasks/update_status/<int:task_id>", methods=["POST"])
 def update_status(task_id):
     data = request.get_json()
     new_status = data.get('status')
@@ -113,7 +109,7 @@ def update_status(task_id):
 
     return jsonify(success=True)
 
-@bp.route("/tasks/delete/<int:task_id>", methods=["DELETE"])
+@tasks_bp.route("/tasks/delete/<int:task_id>", methods=["DELETE"])
 def delete(task_id):
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -125,3 +121,4 @@ def delete(task_id):
     redis_client.delete("tasks_cache")
     
     return jsonify(success=True)
+
