@@ -13,30 +13,30 @@ Uma aplicação web simples para gerenciamento de tarefas, construída com Flask
 
 ## Estrutura de Diretórios
 
-todo/
-│
-├── .venv/                   # Ambiente virtual
-│
-├── app/                      # Lógica do backend
-│   ├── __init__.py           # Inicialização do Flask
-│   ├── db.py                 # Configurações do banco de dados
-│   ├── routes.py             # Rotas do Flask (API e autenticação)
-│   └── auth/                 # Blueprint de autenticação
-│       ├── __init__.py
-│       ├── routes.py
-│       └── models.py
-│
-├── front-end/                # Arquivos do frontend
-│   ├── static/               # Arquivos estáticos (CSS, JS)
-│   │   ├── script.js         # Lógica JavaScript para interação
-│   │   └── style.css         # Estilos CSS
-│   └── templates/            # Templates HTML
-│       ├── index.html        # Página principal (Lista de tarefas)
-│       ├── login.html        # Página de login
-│       └── register.html     # Página de registro de usuário
-│
-├── run.py                    # Arquivo para rodar a aplicação
-└── requirements.txt          # Dependências do projeto
+- todo/
+- │
+- ├── .venv/                   # Ambiente virtual
+- │
+- ├── app/                      # Lógica do backend
+- │   ├── __init__.py           # Inicialização do Flask
+- │   ├── db.py                 # Configurações do banco de dados
+- │   ├── routes.py             # Rotas do Flask (API e autenticação)
+- │   └── auth/                 # Blueprint de autenticação
+- │       ├── __init__.py
+- │       ├── routes.py
+- │       └── models.py
+- │
+- ├── front-end/                # Arquivos do frontend
+- │   ├── static/               # Arquivos estáticos (CSS, JS)
+- │   │   ├── script.js         # Lógica JavaScript para interação
+- │   │   └── style.css         # Estilos CSS
+- │   └── templates/            # Templates HTML
+- │       ├── index.html        # Página principal (Lista de tarefas)
+- │       ├── login.html        # Página de login
+- │       └── register.html     # Página de registro de usuário
+- │
+- ├── run.py                    # Arquivo para rodar a aplicação
+- └── requirements.txt          # Dependências do projeto
 
 
 ## Tecnologias Utilizadas
